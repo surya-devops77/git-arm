@@ -1,0 +1,23 @@
+trigger:
+- main
+pool:
+  name: Default 
+variables:
+  resourceGroupName: 'my-linux-vm-rg' 
+  location: 'Central US'               
+  deploymentName: 'DeployLinuxVM'      
+# Steps to execute
+steps:
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'             
+    azureResourceManagerConnection: 'arm-template'  
+    subscriptionId: '83f5959f-2f46-4a86-9006-cb2e23ff3bd7'      
+    action: 'Create Or Update Resource Group'      
+    resourceGroupName: '$(resourceGroupName)'      
+    location: '$(location)'                        
+    templateLocation: 'Linked artifact'            
+    csmFile: '$(Build.SourcesDirectory)/templates/azuredeploy.json'  
+    csmParametersFile: '$(Build.SourcesDirectory)/templates/azuredeploy.parameters.json'
+    deploymentMode: 'Incremental'                
+    deploymentName: '$(deploymentName)'           
