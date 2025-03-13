@@ -1,0 +1,43 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmName": {
+            "value": "simpleLinuxVM"
+        },
+        "adminUsername": {
+            "value": "azureuser" 
+        },
+        "authenticationType": {
+            "value": "sshPublicKey"
+        },
+        "adminPasswordOrKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDjQqb2nqdj9D6H+45bKOUG89Z9dHBSAuIuF+SeBYSh+4Q/GYrPmpkiSILPWCZL0RpHrRxdise6jVqE0rWyLqCr/V5mP49+nn8c1wAFjWM7kOjmkWyANDWEeHO0QwzoBsYdRRwLxtglBNqomWqibbgeJpv4wvpl8yokre8Em0QvCb11rvSJka7PJ38wpQM0hQyxVakM4pT4kitH9xlWVLwlHfp8uItVS1Ue6bkr46qxK8Xx/K/YLj2c2J0Bic/lacQEwlUwxLoVUjZW5Q/5jQa3/khorSSjXlKi5uGPzQ5PyDD5lAQTms8zEhM4MiUxmYZXrZQw+NMtMrNWKH/V/m1545q7dE6MCbRd7UXoL9YSuRtpDNzFzToZL8tAXY8Vqt6l63N9OI92NObAsIDERFnYm/7mUUTO986QLIjbhpJvr+X2KepWCLkGJVsQSMtAyHR402UQMLBGdmn8Hp5GZAwGm01iunGxbxdP+Gdwu/w5AR9oVogF/UwgZzDe7pjUTQlifQQODvD4eSXgmHZ6X5fglAhugojHpOUzgAi7ucg546lXqfVqlHkvTZCLI889NxSVcLBf1J/0xWWXMsvc2fxD6MpjbvdN4zx65vmU3uAMfZkjuz238pQLBERy2Lulk5sODo9MHtRoxueo1uReGcUW0GJirbq0A9YT6rZrL8/2vQ== ait@DESKTOP-TKJS7GO" 
+        },
+        "dnsLabelPrefix": {
+            "value": "myuniquednslabel-546" 
+            
+        },
+        "ubuntuOSVersion": {
+            "value": "Ubuntu-2204"
+        },
+        "location": {
+            "value": "Central US" 
+        },
+        "vmSize": {
+            "value": "Standard_B1s"
+        },
+        "virtualNetworkName": {
+            "value": "vNet-arm"
+        },
+        "subnetName": {
+            "value": "Subnet-arm"
+        },
+        "networkSecurityGroupName": {
+            "value": "SecGroupNet-arm"
+        },
+        "securityType": {
+            "value": "TrustedLaunch"
+        }
+    }
+}
