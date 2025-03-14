@@ -16,6 +16,10 @@
         "description": "The name of your Virtual Machine."
       }
     },
+    "isNewDeployment": {
+      "type": "bool",
+      "defaultValue": false
+    },
     "adminUsername": {
       "type": "string",
       "metadata": {
@@ -119,6 +123,17 @@
         "version": "latest"
       }
     },
+    "sshConfig": {
+      "disablePasswordAuthentication": true,
+      "ssh": {
+        "publicKeys": [
+          {
+            "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+            "keyData": "[parameters('adminPasswordOrKey')]"
+          }
+        ]
+      }
+    },       
     "publicIPAddressName": "[format('{0}PublicIP', parameters('vmName'))]",
     "networkInterfaceName": "[format('{0}NetInt', parameters('vmName'))]",
     "osDiskType": "Standard_LRS",
@@ -271,7 +286,7 @@
           "computerName": "[parameters('vmName')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrKey')]",
-          "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]"
+          "linuxConfiguration": "[if(parameters('isNewDeployment'), variables('sshConfig'), null())]"
         },
         "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfileJson'), null())]"
       },
