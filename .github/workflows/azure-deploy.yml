@@ -13,43 +13,45 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        
+
       - name: Log in to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Ensure Resource Group Exists
+        run: |
+          if ! az group show --name my-linux-vm-rg &>/dev/null; then
+            echo "🔹 Resource group not found. Creating..."
+            az group create --name my-linux-vm-rg --location "Central US"
+          else
+            echo "✅ Resource group already exists."
+          fi
+
       - name: Check if VM Exists
         id: check_vm
         run: |
-          if az vm show --resource-group my-linux-vm-rg --name my-vm --query "id" --output tsv; then
-            echo "IS_NEW_DEPLOYMENT=false" >> $GITHUB_ENV
+          if az vm show --resource-group my-linux-vm-rg --name my-vm --query "id" --output tsv &>/dev/null; then
+            echo "✅ VM exists."
+            echo "VM_EXISTS=true" >> $GITHUB_ENV
           else
-            echo "IS_NEW_DEPLOYMENT=true" >> $GITHUB_ENV
+            echo "⚠️ VM does not exist. Will create a new one."
+            echo "VM_EXISTS=false" >> $GITHUB_ENV
           fi
 
-      - name: Generate SSH Key (Only on First Deployment)
-        if: env.IS_NEW_DEPLOYMENT == 'true'
+      - name: Generate SSH Key (Only for First Deployment)
+        if: env.VM_EXISTS == 'false'
         run: |
+          echo "🔹 Generating SSH key for new VM..."
           ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -C "github-actions"
           echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_ENV
 
-      - name: Save Private Key as Artifact (Only on First Deployment)
-        if: env.IS_NEW_DEPLOYMENT == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: ssh-private-key
-          path: ~/.ssh/id_rsa
-
-      - name: Inject SSH Key into Parameters File (Only on First Deployment)
-        if: env.IS_NEW_DEPLOYMENT == 'true'
+      - name: Inject SSH Key into Parameters File (Only for First Deployment)
+        if: env.VM_EXISTS == 'false'
         run: |
           jq --arg key "$SSH_PUBLIC_KEY" '.parameters.adminPasswordOrKey.value = $key' templates/azuredeploy.parameters.json > temp.json
           mv temp.json templates/azuredeploy.parameters.json
-
-      - name: Log in to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          echo "✅ SSH key added to ARM template parameters."
 
       - name: Deploy ARM Template
         uses: azure/arm-deploy@v1
@@ -60,3 +62,11 @@ jobs:
           template: templates/azuredeploy.json
           parameters: templates/azuredeploy.parameters.json
           deploymentMode: Incremental
+
+      - name: Save Private SSH Key to Artifact (Only for First Deployment)
+        if: env.VM_EXISTS == 'false'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ssh-private-key
+          path: ~/.ssh/id_rsa
+          retention-days: 7
