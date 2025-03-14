@@ -16,7 +16,8 @@ jobs:
 
       - name: Generate SSH Key (if not exists)
         run: |
-          if [ ! -f ~/.ssh/id_rsa.pub ]; then
+          mkdir -p ~/.ssh
+          if [ ! -f ~/.ssh/id_rsa ]; then
             ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -C "github-actions"
           fi
           echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_ENV
@@ -44,3 +45,10 @@ jobs:
           template: templates/azuredeploy.json
           parameters: templates/azuredeploy.parameters.json
           deploymentMode: Incremental
+
+      - name: Upload SSH Private Key as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ssh-private-key
+          path: ~/.ssh/id_rsa
+          if-no-files-found: error
