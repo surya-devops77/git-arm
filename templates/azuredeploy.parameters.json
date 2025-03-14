@@ -25,7 +25,7 @@
             "value": "Central US" 
         },
         "vmSize": {
-            "value": "Standard_B1s"
+            "value": "Standard_B2ms"
         },
         "virtualNetworkName": {
             "value": "vNet-arm"
