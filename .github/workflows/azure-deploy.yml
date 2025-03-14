@@ -40,14 +40,14 @@ jobs:
           fi
 
       - name: Generate SSH Key (Only for First Deployment)
-        if: env.VM_EXISTS == 'false'
+        if: ${{ env.VM_EXISTS == 'false' }}
         run: |
           echo "🔹 Generating SSH key for new VM..."
           ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -C "github-actions"
           echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_ENV
 
       - name: Inject SSH Key into Parameters File (Only for First Deployment)
-        if: env.VM_EXISTS == 'false'
+        if: ${{ env.VM_EXISTS == 'false' }}
         run: |
           jq --arg key "$SSH_PUBLIC_KEY" '.parameters.adminPasswordOrKey.value = $key' templates/azuredeploy.parameters.json > temp.json
           mv temp.json templates/azuredeploy.parameters.json
@@ -64,8 +64,8 @@ jobs:
           deploymentMode: Incremental
 
       - name: Save Private SSH Key to Artifact (Only for First Deployment)
-        if: env.VM_EXISTS == 'false'
-        uses: actions/upload-artifact@v3
+        if: ${{ env.VM_EXISTS == 'false' }}
+        uses: actions/upload-artifact@v4
         with:
           name: ssh-private-key
           path: ~/.ssh/id_rsa
