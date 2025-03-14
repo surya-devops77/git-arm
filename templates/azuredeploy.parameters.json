@@ -16,7 +16,6 @@
         },
         "dnsLabelPrefix": {
             "value": "myuniquednslabel1-546" 
-            
         },
         "ubuntuOSVersion": {
             "value": "Ubuntu-2204"
