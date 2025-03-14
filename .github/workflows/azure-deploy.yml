@@ -22,27 +22,27 @@ jobs:
       - name: Ensure Resource Group Exists
         run: |
           if ! az group show --name my-linux-vm-rg &>/dev/null; then
-            echo "🔹 Resource group not found. Creating..."
+            echo " Resource group not found. Creating..."
             az group create --name my-linux-vm-rg --location "Central US"
           else
-            echo "✅ Resource group already exists."
+            echo " Resource group already exists."
           fi
 
       - name: Check if VM Exists
         id: check_vm
         run: |
           if az vm show --resource-group my-linux-vm-rg --name simpleLinuxVM --query "id" --output tsv &>/dev/null; then
-            echo "✅ VM exists."
+            echo " VM exists."
             echo "VM_EXISTS=true" >> $GITHUB_ENV
           else
-            echo "⚠️ VM does not exist. Will create a new one."
+            echo " VM does not exist. Will create a new one."
             echo "VM_EXISTS=false" >> $GITHUB_ENV
           fi
 
       - name: Generate SSH Key (Only for First Deployment)
         if: ${{ env.VM_EXISTS == 'false' }}
         run: |
-          echo "🔹 Generating SSH key for new VM..."
+          echo "Generating SSH key for new VM..."
           ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -C "github-actions"
           echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_ENV
 
@@ -51,7 +51,7 @@ jobs:
         run: |
           jq --arg key "$SSH_PUBLIC_KEY" '.parameters.adminPasswordOrKey.value = $key' templates/azuredeploy.parameters.json > temp.json
           mv temp.json templates/azuredeploy.parameters.json
-          echo "✅ SSH key added to ARM template parameters."
+          echo "SSH key added to ARM template parameters."
 
       - name: Deploy ARM Template
         uses: azure/arm-deploy@v1
