@@ -1,7 +1,7 @@
 name: Deploy ARM Template
 
 on:
-  pull:
+  push:
     branches:
       - main
   workflow_dispatch:
@@ -14,15 +14,30 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Generate SSH Key (if not exists)
+      - name: Check if VM Exists
+        id: check_vm
         run: |
-          mkdir -p ~/.ssh
-          if [ ! -f ~/.ssh/id_rsa ]; then
-            ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -C "github-actions"
+          if az vm show --resource-group my-linux-vm-rg --name my-vm --query "id" --output tsv; then
+            echo "IS_NEW_DEPLOYMENT=false" >> $GITHUB_ENV
+          else
+            echo "IS_NEW_DEPLOYMENT=true" >> $GITHUB_ENV
           fi
+
+      - name: Generate SSH Key (Only on First Deployment)
+        if: env.IS_NEW_DEPLOYMENT == 'true'
+        run: |
+          ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -C "github-actions"
           echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_ENV
 
-      - name: Inject SSH Key into Parameters File
+      - name: Save Private Key as Artifact (Only on First Deployment)
+        if: env.IS_NEW_DEPLOYMENT == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ssh-private-key
+          path: ~/.ssh/id_rsa
+
+      - name: Inject SSH Key into Parameters File (Only on First Deployment)
+        if: env.IS_NEW_DEPLOYMENT == 'true'
         run: |
           jq --arg key "$SSH_PUBLIC_KEY" '.parameters.adminPasswordOrKey.value = $key' templates/azuredeploy.parameters.json > temp.json
           mv temp.json templates/azuredeploy.parameters.json
@@ -32,23 +47,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      #- name: Create Resource Group (if not exists)
-        #run: |
-          #az group create --name my-linux-vm-rg --location "Central US"
-
       - name: Deploy ARM Template
         uses: azure/arm-deploy@v1
         with:
           scope: resourcegroup
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: Arm-Template-RG
+          resourceGroupName: my-linux-vm-rg
           template: templates/azuredeploy.json
           parameters: templates/azuredeploy.parameters.json
           deploymentMode: Incremental
-
-      - name: Upload SSH Private Key as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ssh-private-key
-          path: ~/.ssh/id_rsa
-          if-no-files-found: error
