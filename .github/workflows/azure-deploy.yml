@@ -31,7 +31,7 @@ jobs:
       - name: Check if VM Exists
         id: check_vm
         run: |
-          if az vm show --resource-group my-linux-vm-rg --name my-vm --query "id" --output tsv &>/dev/null; then
+          if az vm show --resource-group my-linux-vm-rg --name simpleLinuxVM --query "id" --output tsv &>/dev/null; then
             echo "✅ VM exists."
             echo "VM_EXISTS=true" >> $GITHUB_ENV
           else
