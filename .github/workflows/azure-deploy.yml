@@ -37,7 +37,6 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: my-linux-vm-rg
           template: templates/azuredeploy.json
-          parameters: >
-            templates/azuredeploy.parameters.json 
-            adminPasswordOrKey="${{ env.SSH_PUBLIC_KEY }}"
+          parameters: templates/azuredeploy.parameters.json
+          additionalParameters: adminPasswordOrKey="${{ env.SSH_PUBLIC_KEY }}"
           deploymentMode: Incremental
