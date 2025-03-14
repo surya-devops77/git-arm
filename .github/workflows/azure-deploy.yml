@@ -32,9 +32,9 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Create Resource Group (if not exists)
-        run: |
-          az group create --name my-linux-vm-rg --location "Central US"
+      #- name: Create Resource Group (if not exists)
+        #run: |
+          #az group create --name my-linux-vm-rg --location "Central US"
 
       - name: Deploy ARM Template
         uses: azure/arm-deploy@v1
