@@ -41,7 +41,7 @@ jobs:
         with:
           scope: resourcegroup
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: my-linux-vm-rg
+          resourceGroupName: Arm-Template-RG
           template: templates/azuredeploy.json
           parameters: templates/azuredeploy.parameters.json
           deploymentMode: Incremental
