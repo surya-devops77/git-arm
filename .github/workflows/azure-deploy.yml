@@ -1,37 +1,47 @@
-name: Deploy VM with SSH Key
+name: Deploy ARM Template
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main  # Runs when code is pushed to the main branch
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
-  generate-ssh-key:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Generate SSH key pair
+      - name: Generate SSH Key
         run: |
-          ssh-keygen -t rsa -b 4096 -C "github-action" -f ssh_key -N ""
+          ssh-keygen -t rsa -b 4096 -f id_rsa -N ""
+          echo "SSH_PUBLIC_KEY=$(cat id_rsa.pub)" >> $GITHUB_ENV
 
-      - name: Store public key as an environment variable
-        run: echo "SSH_PUBLIC_KEY=$(cat ssh_key.pub)" >> $GITHUB_ENV
-
-      - name: Upload private key as an artifact
-        uses: actions/upload-artifact@v4
+      - name: Store Private Key as Artifact
+        uses: actions/upload-artifact@v3
         with:
           name: ssh-private-key
-          path: ssh_key
+          path: id_rsa
           retention-days: 1
 
-      - name: Replace public key in parameters.json
-        run: |
-          sed -i "s|\"value\": \".*\"|\"value\": \"${SSH_PUBLIC_KEY}\"|" parameters.json
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy VM using ARM template
+      - name: Create Resource Group (if not exists)
+        run: |
+          az group create --name my-linux-vm-rg --location "Central US"
+
+      - name: Deploy ARM Template
         uses: azure/arm-deploy@v1
         with:
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resource-group: myResourceGroup
-          template: main.json
-          parameters: parameters.json
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: my-linux-vm-rg
+          template: templates/azuredeploy.json
+          parameters: >
+            templates/azuredeploy.parameters.json
+            adminPasswordOrKey=${{ env.SSH_PUBLIC_KEY }}
+          deploymentMode: Incremental
