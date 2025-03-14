@@ -12,7 +12,7 @@
             "value": "sshPublicKey"
         },
         "adminPasswordOrKey": {
-            "value": "${{ env.SSH_PUBLIC_KEY }}" 
+            "value": "${{ env.SSH_PUBLIC_KEY }}"
         },
         "dnsLabelPrefix": {
             "value": "myuniquednslabel-546" 
@@ -38,6 +38,10 @@
         },
         "securityType": {
             "value": "TrustedLaunch"
+        },
+        "isNewDeployment": {
+            "value": false
         }
     }
 }
+
