@@ -20,7 +20,7 @@ jobs:
           echo "SSH_PUBLIC_KEY=$(cat id_rsa.pub)" >> $GITHUB_ENV
 
       - name: Store Private Key as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ssh-private-key
           path: id_rsa
