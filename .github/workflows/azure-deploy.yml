@@ -21,6 +21,11 @@ jobs:
           fi
           echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_ENV
 
+      - name: Inject SSH Key into Parameters File
+        run: |
+          jq --arg key "$SSH_PUBLIC_KEY" '.parameters.adminPasswordOrKey.value = $key' templates/azuredeploy.parameters.json > temp.json
+          mv temp.json templates/azuredeploy.parameters.json
+
       - name: Log in to Azure
         uses: azure/login@v1
         with:
@@ -38,5 +43,4 @@ jobs:
           resourceGroupName: my-linux-vm-rg
           template: templates/azuredeploy.json
           parameters: templates/azuredeploy.parameters.json
-          additionalParameters: adminPasswordOrKey="${{ env.SSH_PUBLIC_KEY }}"
           deploymentMode: Incremental
