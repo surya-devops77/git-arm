@@ -154,6 +154,31 @@
   },
   "resources": [
     {
+  "type": "Microsoft.Compute/virtualMachines/extensions",
+  "apiVersion": "2023-09-01",
+  "name": "[concat(parameters('vmName'), '/installScript')]",
+  "location": "[parameters('location')]",
+  "properties": {
+    "publisher": "Microsoft.Azure.Extensions",
+    "type": "CustomScript",
+    "typeHandlerVersion": "2.1",
+    "autoUpgradeMinorVersion": true,
+    "settings": {
+      "fileUris": [
+        "https://raw.githubusercontent.com/surya-devops77/git-arm/refs/heads/main/templates/install.sh"
+      ],
+      "timestamp": "[utcNow()]"
+    },
+    "protectedSettings": {
+      "commandToExecute": "bash install.sh"
+    }
+  },
+  "dependsOn": [
+    "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+  ]
+},
+
+    {
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2023-09-01",
       "name": "[variables('networkInterfaceName')]",
