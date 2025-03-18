@@ -1,73 +1,60 @@
+name: Deploy ARM Template
 
- name: Deploy ARM Template
- 
- on:
-   push:
-     branches:
-       - main
-   workflow_dispatch:
- 
- jobs:
-   deploy:
-     runs-on: ubuntu-latest
- 
-     steps:
-       - name: Checkout Repository
-         uses: actions/checkout@v4
- 
-       - name: Log in to Azure
-         uses: azure/login@v1
-         with:
-           creds: ${{ secrets.AZURE_CREDENTIALS }}
- 
-       - name: Ensure Resource Group Exists
-         run: |
-           if ! az group show --name my-linux-vm-rg &>/dev/null; then 
-             echo " Resource group not found. Creating..."
-             az group create --name my-linux-vm-rg --location "Central US"
-           else
-             echo " Resource group already exists."
-           fi
- 
-       - name: Check if VM Exists
-         id: check_vm
-         run: |
-           if az vm show --resource-group my-linux-vm-rg --name simpleLinuxVM --query "id" --output tsv &>/dev/null; then
-             echo " VM exists."
-             echo "VM_EXISTS=true" >> $GITHUB_ENV
-           else
-             echo " VM does not exist. Will create a new one."
-             echo "VM_EXISTS=false" >> $GITHUB_ENV
-           fi
- 
-       - name: Generate SSH Key (Only for First Deployment)
-         if: ${{ env.VM_EXISTS == 'false' }}
-         run: |
-           echo "Generating SSH key for new VM..."
-           ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -C "github-actions"
-           echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_ENV
- 
-       - name: Inject SSH Key into Parameters File (Only for First Deployment)
-         if: ${{ env.VM_EXISTS == 'false' }}
-         run: |
-           jq --arg key "$SSH_PUBLIC_KEY" '.parameters.adminPasswordOrKey.value = $key' templates/azuredeploy.parameters.json > temp.json
-           mv temp.json templates/azuredeploy.parameters.json
-           echo "SSH key added to ARM template parameters."
- 
-       - name: Deploy ARM Template
-         uses: azure/arm-deploy@v1
-         with:
-           scope: resourcegroup
-           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-           resourceGroupName: my-linux-vm-rg
-           template: templates/azuredeploy.json
-           parameters: templates/azuredeploy.parameters.json
-           deploymentMode: Incremental
- 
-       - name: Save Private SSH Key to Artifact (Only for First Deployment)
-         if: ${{ env.VM_EXISTS == 'false' }}
-         uses: actions/upload-artifact@v4
-         with:
-           name: ssh-private-key
-           path: ~/.ssh/id_rsa
-           retention-days: 7
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Ensure Resource Group Exists
+        run: |
+          if [ -z "$(az group show --name my-linux-vm-rg --query "name" -o tsv 2>/dev/null)" ]; then
+            echo "Resource group not found. Creating..."
+            az group create --name my-linux-vm-rg --location "Central US"
+          else
+            echo "Resource group already exists."
+          fi
+
+      - name: Generate New SSH Key
+        run: |
+          echo "Generating a new SSH key..."
+          ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -C "github-actions"
+          echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_ENV
+          echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_OUTPUT
+
+      - name: Inject SSH Key into Parameters File
+        run: |
+          SSH_KEY=$(cat ~/.ssh/id_rsa.pub)
+          jq --arg key "$SSH_KEY" '.parameters.sshPublicKey.value = $key' templates/azuredeploy.parameters.json > temp.json
+          mv temp.json templates/azuredeploy.parameters.json
+          echo "Updated SSH key in azuredeploy.parameters.json"
+
+      - name: Deploy ARM Template
+        uses: azure/arm-deploy@v1
+        with:
+          scope: resourcegroup
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: my-linux-vm-rg
+          template: templates/azuredeploy.json
+          parameters: templates/azuredeploy.parameters.json
+          deploymentMode: Incremental
+
+      - name: Save Private SSH Key to Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ssh-private-key
+          path: ~/.ssh/id_rsa
+          retention-days: 7
