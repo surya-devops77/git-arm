@@ -26,12 +26,8 @@ jobs:
 
       - name: Ensure Resource Group Exists
         run: |
-          if [[ -z "$(az group show --name ${{ env.RESOURCE_GROUP }} --query "name" --output tsv 2>/dev/null)" ]]; then
-            echo "Resource group not found. Creating..."
             az group create --name ${{ env.RESOURCE_GROUP }} --location "Central US"
-          else
-            echo "Resource group already exists."
-          fi
+
 
       - name: Check if VM Exists
         id: check_vm
