@@ -39,7 +39,7 @@
             "value": "TrustedLaunch"
         },
         "isNewDeployment": {
-            "value": false
+            "value": true
         }
     }
 }
