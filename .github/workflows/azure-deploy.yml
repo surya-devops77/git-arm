@@ -26,7 +26,7 @@ jobs:
 
       - name: Ensure Resource Group Exists
         run: |
-          if ! az group show --name ${{ env.RESOURCE_GROUP }} &>/dev/null; then
+          if [[ -z "$(az group show --name ${{ env.RESOURCE_GROUP }} --query "name" --output tsv 2>/dev/null)" ]]; then
             echo "Resource group not found. Creating..."
             az group create --name ${{ env.RESOURCE_GROUP }} --location "Central US"
           else
@@ -43,7 +43,6 @@ jobs:
             echo "VM does not exist. Will create a new one."
             echo "VM_EXISTS=false" >> $GITHUB_ENV
           fi
-
 
       - name: Generate SSH Key (Only for First Deployment)
         if: ${{ env.VM_EXISTS == 'false' }}
