@@ -14,7 +14,10 @@
       "defaultValue": "simpleLinuxVM",
       "metadata": {
         "description": "The name of your Virtual Machine."
-      }
+      },
+    "currentTime": {
+      "type": "string",
+      "defaultValue": "[utcNow()]"
     },
     "isNewDeployment": {
       "type": "bool",
@@ -167,7 +170,7 @@
       "fileUris": [
         "https://raw.githubusercontent.com/surya-devops77/git-arm/refs/heads/main/templates/install.sh"
       ],
-      "timestamp": "[utcNow()]"
+      "timestamp": "[parameters('currentTime')]"
     },
     "protectedSettings": {
       "commandToExecute": "bash install.sh"
