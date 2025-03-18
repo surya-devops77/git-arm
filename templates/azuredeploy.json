@@ -174,11 +174,11 @@
     "settings": {
       "fileUris": [
         "https://raw.githubusercontent.com/surya-devops77/git-arm/refs/heads/main/templates/install.sh"
-      ],
-      "timestamp": "[parameters('deploymentTimestamp')]"
+      ]
+      
     },
     "protectedSettings": {
-      "commandToExecute": "bash install.sh"
+      "commandToExecute": "chmod +x install.sh && bash install.sh"
     }
   },
   "dependsOn": [
