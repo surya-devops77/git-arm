@@ -28,7 +28,7 @@
     },
     "authenticationType": {
       "type": "string",
-      "defaultValue": "sshPublicKey",
+      "defaultValue": "password",
       "allowedValues": [
         "sshPublicKey",
         "password"
@@ -178,7 +178,7 @@
       
     },
     "protectedSettings": {
-      "commandToExecute": "chmod +x install.sh && bash install.sh"
+      "commandToExecute": "bash install.sh"
     }
   },
   "dependsOn": [
@@ -307,7 +307,7 @@
         "osProfile": {
         "computerName": "[parameters('vmName')]",
         "adminUsername": "[parameters('adminUsername')]",
-        "adminPassword": "[if(equals(parameters('authenticationType'), 'password'), parameters('adminPasswordOrKey'), null())]",
+        "adminPassword": "[if(equals(parameters('authenticationType'), 'password'), parameters('adminPasswordOrKey'), json('null'))]",
         "linuxConfiguration": "[if(and(equals(parameters('authenticationType'), 'sshPublicKey'), equals(parameters('isNewDeployment'), 'true')), variables('linuxConfiguration'), json('null'))]"
         },
         "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfileJson'), null())]"
