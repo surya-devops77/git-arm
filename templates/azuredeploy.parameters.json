@@ -9,10 +9,10 @@
             "value": "azureuser" 
         },
         "authenticationType": {
-            "value": "sshPublicKey"
+            "value": "password"
         },
         "adminPasswordOrKey": {
-            "value": "${{ env.SSH_PUBLIC_KEY }}"
+            "value": "demo@123"
         },
         "dnsLabelPrefix": {
             "value": "myuniquednslabel1-546" 
