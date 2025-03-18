@@ -84,6 +84,8 @@ sudo apt-get install -y certbot python3-certbot-nginx
 # Step 5: Setup Application Paths
 sudo mkdir -p /opt/nodejs/frontend /opt/nodejs/backend
 
+cd /home/demouser
+
 # Step 6: Configure Git for demouser
 echo '#!/bin/bash' > $HOME/git_creds.sh
 echo "sleep 1" >> $HOME/git_creds.sh
