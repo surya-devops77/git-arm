@@ -243,7 +243,7 @@
                 "publicIPAllocationMethod": "Dynamic",
                 "publicIPAddressVersion": "IPv4",
                 "dnsSettings": {
-                    "domainNameLabel": "[concat('vm-', uniqueString(resourceGroup().id))]"
+                    "domainNameLabel":  "[parameters('dnsLabelPrefix')]"
                 },
                 "idleTimeoutInMinutes": 4
             }
@@ -337,13 +337,9 @@
         "type": "string",
         "value": "[parameters('adminUsername')]"
     },
-    "publicIpAddress": {
+        "publicIpAddress": {
         "type": "string",
-        "value": "[if(contains(reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01'), 'ipAddress'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').ipAddress, 'Not Assigned Yet')]"
-    },
-    "sshCommand": {
-        "type": "string",
-        "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').dnsSettings.fqdn)]"
+        "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').ipAddress]"
     }
   }
 }
