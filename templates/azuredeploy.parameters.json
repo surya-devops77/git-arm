@@ -16,7 +16,6 @@
         },
         "dnsLabelPrefix": {
             "value": "myuniquednslabel-546"
-           
         },
         "ubuntuOSVersion": {
             "value": "Ubuntu-2204"
@@ -38,6 +37,12 @@
         },
         "securityType": {
             "value": "TrustedLaunch"
+        },
+        "scriptUrl": {
+            "type": "string",
+            "metadata": {
+                "description": "Public URL of the shell script to execute after VM creation."
+            }
         }
     }
 }
