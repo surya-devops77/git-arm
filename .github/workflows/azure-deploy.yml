@@ -4,7 +4,7 @@ name: Deploy ARM Template
 on:
   push:
     branches:
-#      - main
+      - main
   workflow_dispatch:
 
 
