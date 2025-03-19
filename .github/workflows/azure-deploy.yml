@@ -54,17 +54,12 @@ jobs:
       - name: Print ARM Outputs
         run: |
           echo "Admin Username: ${{ steps.deploy.outputs.adminUsername }}"
-          echo "Hostname (FQDN): ${{ steps.deploy.outputs.hostname }}"
           echo "Public IP Address: ${{ steps.deploy.outputs.publicIpAddress }}"
           echo "SSH Command: ${{ steps.deploy.outputs.sshCommand }}"
 
       - name: Store Outputs in Environment
         run: |
           echo "ADMIN_USERNAME=${{ steps.deploy.outputs.adminUsername }}" >> $GITHUB_ENV
-          echo "HOSTNAME=${{ steps.deploy.outputs.hostname }}" >> $GITHUB_ENV
           echo "PUBLIC_IP=${{ steps.deploy.outputs.publicIpAddress }}" >> $GITHUB_ENV
           echo "SSH_COMMAND=${{ steps.deploy.outputs.sshCommand }}" >> $GITHUB_ENV
-
-      - name: Use Outputs in Next Steps
-        run: echo "Connect using:ssh ${{ env.ADMIN_USERNAME }}@${{ env.PUBLIC_IP }}"
 
