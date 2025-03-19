@@ -37,7 +37,7 @@ jobs:
           az group create --name my-linux-vm-rr3 --location "Central US"
 
       - name: Deploy ARM Template
-        id: deploy_vm  # <-- ✅ Assign an ID to use its outputs later
+        id: deploy_vm  # <-- Assign an ID to use its outputs later
         uses: azure/arm-deploy@v1
         with:
           scope: resourcegroup
