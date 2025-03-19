@@ -15,7 +15,7 @@
             "value": "${{ env.SSH_PUBLIC_KEY }}"
         },
         "dnsLabelPrefix": {
-            "value": "myuniqudnslabel-54678"
+            "value": "myuniqudnslabel-5478"
         },
         "ubuntuOSVersion": {
             "value": "Ubuntu-2204"
