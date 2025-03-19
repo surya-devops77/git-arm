@@ -51,18 +51,8 @@ jobs:
           path: ~/.ssh/id_rsa
           if-no-files-found: error
 
-      - name: Retrieve ARM Outputs
-        id: get_arm_outputs
-        run: |
-          OUTPUTS=$(az deployment group show --resource-group my-linux-vm-rr5 --name azuredeploy --query "properties.outputs" -o json)
-          echo "OUTPUTS: $OUTPUTS"
-
-          echo "ADMIN_USERNAME=$(echo $OUTPUTS | jq -r '.adminUsername.value')" >> $GITHUB_ENV
-          echo "HOSTNAME=$(echo $OUTPUTS | jq -r '.hostname.value')" >> $GITHUB_ENV
-          echo "SSH_COMMAND=$(echo $OUTPUTS | jq -r '.sshCommand.value')" >> $GITHUB_ENV
-
       - name: Print ARM Outputs
         run: |
-          echo "Admin Username: $ADMIN_USERNAME"
-          echo "Hostname (FQDN): $HOSTNAME"
-          echo "SSH Command: $SSH_COMMAND"
+          echo "Admin Username: ${{ steps.deploy.outputs.adminUsername }}"
+          echo "Public IP Address: ${{ steps.deploy_vm.outputs.publicIpAddress }}"
+
