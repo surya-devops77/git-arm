@@ -240,7 +240,7 @@
                  "name": "Basic"
              },
              "properties": {
-                 "publicIPAllocationMethod": "Dynamic",
+                 "publicIPAllocationMethod": "Static",
                  "publicIPAddressVersion": "IPv4",
                  "dnsSettings": {
                      "domainNameLabel": "[concat('vm-', uniqueString(resourceGroup().id))]"
