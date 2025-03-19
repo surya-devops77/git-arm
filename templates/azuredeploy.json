@@ -243,7 +243,7 @@
                 "publicIPAllocationMethod": "Static",
                 "publicIPAddressVersion": "IPv4",
                 "dnsSettings": {
-                    "domainNameLabel":  "[concat('vm-', uniqueString(resourceGroup().id))]"
+                    "domainNameLabel": "[concat('vm-', uniqueString(resourceGroup().id))]"
                 },
                 "idleTimeoutInMinutes": 4
             }
@@ -332,22 +332,22 @@
             ]
         }
     ],
-"outputs": {
-    "adminUsername": {
-        "type": "string",
-        "value": "[parameters('adminUsername')]"
-    },
-    "hostname": {
-        "type": "string",
-        "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').dnsSettings.fqdn]"
-    },
-    "publicIpAddress": {
-        "type": "string",
-        "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').ipAddress]"
-    },
-    "sshCommand": {
-        "type": "string",
-        "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').dnsSettings.fqdn)]"
+    "outputs": {
+        "adminUsername": {
+            "type": "string",
+            "value": "[parameters('adminUsername')]"
+        },
+        "hostname": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').dnsSettings.fqdn]"
+        },
+        "publicIpAddress": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').ipAddress]"
+        },
+        "sshCommand": {
+            "type": "string",
+            "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').dnsSettings.fqdn)]"
+        }
     }
-  }
 }
