@@ -41,7 +41,7 @@ jobs:
 
       - name: Create Resource Group (if not exists)
         run: |
-          az group create --name my-linux-vm-rg --location "Central US"
+          az group create --name my-linux-vm-rr1 --location "Central US"
 
 
       - name: Deploy ARM Template
@@ -49,7 +49,7 @@ jobs:
         with:
           scope: resourcegroup
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: my-linux-vm-rg
+          resourceGroupName: my-linux-vm-rr1
           template: templates/azuredeploy.json
           parameters: templates/azuredeploy.parameters.json
           deploymentMode: Incremental
