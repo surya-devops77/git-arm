@@ -303,7 +303,28 @@
         "dependsOn": [
           "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
         ]
-      }
+      },
+{
+  "type": "Microsoft.Compute/virtualMachines/extensions",
+  "apiVersion": "2023-09-01",
+  "name": "[format('{0}/customScriptExtension', parameters('vmName'))]",
+  "location": "[parameters('location')]",
+  "properties": {
+    "publisher": "Microsoft.Azure.Extensions",
+    "type": "CustomScript",
+    "typeHandlerVersion": "2.1",
+    "autoUpgradeMinorVersion": true,
+    "settings": {
+      "fileUris": [
+        "[parameters('scriptUrl')]"
+      ],
+      "commandToExecute": "sudo bash script.sh"
+    }
+  },
+  "dependsOn": [
+    "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+  ]
+}
     ],
     "outputs": {
       "adminUsername": {
