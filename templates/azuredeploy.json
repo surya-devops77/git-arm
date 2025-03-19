@@ -243,7 +243,7 @@
                 "publicIPAllocationMethod": "Dynamic",
                 "publicIPAddressVersion": "IPv4",
                 "dnsSettings": {
-                    "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+                    "domainNameLabel": "[concat('vm-', uniqueString(resourceGroup().id))]"
                 },
                 "idleTimeoutInMinutes": 4
             }
