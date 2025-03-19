@@ -66,5 +66,5 @@ jobs:
           echo "SSH_COMMAND=${{ steps.deploy.outputs.sshCommand }}" >> $GITHUB_ENV
 
       - name: Use Outputs in Next Steps
-        run: echo "Connect using: ssh ${{ env.ADMIN_USERNAME }}@${{ env.PUBLIC_IP }}"
+        run: echo "Connect using:ssh ${{ env.ADMIN_USERNAME }}@${{ env.PUBLIC_IP }}"
 
