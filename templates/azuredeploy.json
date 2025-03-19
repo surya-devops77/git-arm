@@ -339,7 +339,7 @@
     },
     "publicIpAddress": {
         "type": "string",
-        "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').ipAddress]"
+        "value": "[if(contains(reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01'), 'ipAddress'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2023-09-01').ipAddress, 'Not Assigned Yet')]"
     },
     "sshCommand": {
         "type": "string",
