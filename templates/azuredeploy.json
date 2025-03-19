@@ -102,6 +102,12 @@
             "metadata": {
                 "description": "Security Type of the Virtual Machine."
             }
+        },
+        "scriptUrl": {
+            "type": "string",
+            "metadata": {
+                "description": "Public URL of the shell script to execute after VM creation."
+            }
         }
     },
     "variables": {
