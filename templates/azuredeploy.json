@@ -324,7 +324,7 @@
                     "fileUris": [
                         "[parameters('scriptUrl')]"
                     ],
-                    "commandToExecute": "sudo bash script.sh"
+                    "commandToExecute": "sudo bash install.sh"
                 }
             },
             "dependsOn": [
