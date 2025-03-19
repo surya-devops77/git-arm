@@ -6,22 +6,23 @@
             "value": "simpleLinuxVM"
         },
         "adminUsername": {
-            "value": "azureuser" 
+            "value": "azureuser"
         },
         "authenticationType": {
-            "value": "password"
+            "value": "sshPublicKey"
         },
         "adminPasswordOrKey": {
-            "value": "0z0@2wBS4oBs<"
+            "value": "${{ env.SSH_PUBLIC_KEY }}"
         },
         "dnsLabelPrefix": {
-            "value": "myuniquednslabel1-546" 
+            "value": "myuniquednslabel-546"
+           
         },
         "ubuntuOSVersion": {
             "value": "Ubuntu-2204"
         },
         "location": {
-            "value": "Central US" 
+            "value": "Central US"
         },
         "vmSize": {
             "value": "Standard_B1s"
@@ -37,10 +38,6 @@
         },
         "securityType": {
             "value": "TrustedLaunch"
-        },
-        "isNewDeployment": {
-            "value": true
         }
     }
 }
-
