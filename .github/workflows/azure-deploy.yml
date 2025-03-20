@@ -55,5 +55,4 @@ jobs:
         run: |
           echo "Admin Username: ${{ steps.deploy_vm.outputs.adminUsername }}"
           echo "Hostname (FQDN): ${{ steps.deploy_vm.outputs.hostname }}"
-          echo "SSH Command: ${{ steps.deploy_vm.outputs.sshCommand }}"
-          echo "Public IP Address: ${{ steps.deploy.outputs.publicIpAddress }}"
+          echo "Public IP Address: ${{ steps.deploy_vm.outputs.publicIpAddress }}"
